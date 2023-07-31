@@ -18,3 +18,8 @@
   padding: 16px;
   overflow-y: scroll;
 }
+
+.auth-link.active {
+  background-color: white;
+  color: #444;
+}

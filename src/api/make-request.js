@@ -22,9 +22,9 @@ export const loadExercises = async () => {
   }
 };
 
-export const loadWorkoutExercises = async () => {
+export const loadWorkoutExercises = async (uid) => {
   try {
-    const { data } = await api.get('/exercises/workouts');
+    const { data } = await api.get(`/exercises/workouts/${uid}`);
     const { exercises } = data;
 
     return exercises;

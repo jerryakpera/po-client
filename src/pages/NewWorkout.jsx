@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { AuthContext } from '../context/AuthContext';
 import { createWorkout, loadExercise } from '../api/make-request';
-import { saveWorkout } from '../api/save-workout';
 import { getTargetMuscles } from '../utils/get-target-muscle-string';
 
 const defaultWorkout = {
@@ -10,9 +10,10 @@ const defaultWorkout = {
   reps: '',
 };
 
-const AddWorkout = () => {
+const NewWorkout = () => {
   const navigate = useNavigate();
   const { exerciseId } = useParams();
+  const { authUser } = useContext(AuthContext);
 
   const [exercise, setExercise] = useState({});
 
@@ -93,8 +94,9 @@ const AddWorkout = () => {
     e.preventDefault();
 
     const payload = {
-      sets: workouts,
       exerciseId,
+      sets: workouts,
+      uid: authUser.uid,
     };
 
     await createWorkout(payload);
@@ -238,4 +240,4 @@ const AddWorkout = () => {
   );
 };
 
-export default AddWorkout;
+export default NewWorkout;

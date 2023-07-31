@@ -4,7 +4,7 @@ import { HeaderNav } from '../components';
 const MainLayout = () => {
   return (
     <>
-      <div className=''>
+      <div>
         <HeaderNav />
         <div className='main-layout-outlet h-screen bg-dark'>
           <Outlet />

@@ -1,40 +1,91 @@
 import {
-  Navigate,
   Route,
+  Navigate,
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
 } from 'react-router-dom';
 
-import { ExercisesPage, HomePage } from './pages';
-import { MainLayout } from './layouts';
-import AddWorkout from './pages/AddWorkout';
+import { AuthContext } from './context/AuthContext';
+import { AuthLayout, MainLayout } from './layouts';
+import { HomePage, LoginPage, NewWorkout, ExercisesPage } from './pages';
+import { useContext } from 'react';
+
+const ProtectedRoute = ({ children }) => {
+  const { isLoggedIn } = useContext(AuthContext);
+
+  if (!isLoggedIn) {
+    return <Navigate to='/login' />;
+  }
+
+  return <>{children}</>;
+};
+
+const GuestRoute = ({ children }) => {
+  const { isLoggedIn } = useContext(AuthContext);
+
+  if (isLoggedIn) {
+    return <Navigate to='/' />;
+  }
+
+  return <>{children}</>;
+};
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route
-      path=''
-      element={<MainLayout />}
-    >
+    <Route>
       <Route
-        index
-        element={<HomePage />}
-      />
+        path='login'
+        element={
+          <GuestRoute>
+            <AuthLayout />
+          </GuestRoute>
+        }
+      >
+        <Route
+          index
+          element={<LoginPage />}
+        />
+
+        <Route
+          to='*'
+          element={<Navigate to='/auth/login' />}
+        />
+
+        {/* <Route
+          path='register'
+          element={<RegisterPage />}
+        /> */}
+      </Route>
 
       <Route
-        path='/exercises'
-        element={<ExercisesPage />}
-      />
+        path=''
+        element={
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route
+          index
+          element={<HomePage />}
+        />
 
-      <Route
-        path='workouts/:exerciseId/new'
-        element={<AddWorkout />}
-      />
+        <Route
+          path='exercises'
+          element={<ExercisesPage />}
+        />
 
-      <Route
-        path='*'
-        element={<Navigate to='/' />}
-      />
+        <Route
+          path='workouts/:exerciseId/new'
+          element={<NewWorkout />}
+        />
+
+        <Route
+          path='*'
+          element={<Navigate to='/' />}
+        />
+      </Route>
     </Route>
   )
 );
